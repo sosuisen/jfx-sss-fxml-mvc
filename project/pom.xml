@@ -3,9 +3,9 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.sosuisen</groupId>
-  <artifactId>jfx-sss-fxml</artifactId>
+  <artifactId>jfx-sss-fxml-mvc</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <description>Generated from jfx-sss-fxml archetype</description>
+  <description>Generated from jfx-sss-fxml-mvc archetype</description>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <javafx.plugin.version>0.0.8</javafx.plugin.version>
