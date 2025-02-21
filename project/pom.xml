@@ -57,7 +57,6 @@
             Exec ./target/myapp/bin/myapp to launch the app.
             -->
           <stripDebug>true</stripDebug>
-          <compress>2</compress>
           <noHeaderFiles>true</noHeaderFiles>
           <noManPages>true</noManPages>
           <mainClass>${main.class}</mainClass>

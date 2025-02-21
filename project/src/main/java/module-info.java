@@ -1,4 +1,4 @@
-module myapp {
+module com.sosuisha {
     requires static lombok;
 
     requires javafx.controls;
