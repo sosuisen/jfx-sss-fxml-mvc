@@ -5,15 +5,17 @@
   <groupId>io.github.sosuisen</groupId>
   <artifactId>jfx-sss-fxml-mvc</artifactId>
   <version>1.0.3</version>
-  <description>JavaFX Archetype for MVC with FXML</description>
+  <description>JavaFX archetype for a non-modular MVC project using FXML</description>
   <url>https://github.com/sosuisen/</url>
   <licenses>
-    <license></license>
+    <license/>
   </licenses>
+
   <developers>
-    <developer></developer>
+    <developer/>
   </developers>
-  <scm />
+
+  <scm/>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <javafx.plugin.version>0.0.8</javafx.plugin.version>
@@ -22,6 +24,7 @@
     <maven.compiler.release>21</maven.compiler.release>
     <main.class>com.sosuisha.App</main.class>
   </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -40,6 +43,7 @@
       <version>${javafx.version}</version>
     </dependency>
   </dependencies>
+
   <build>
     <plugins>
       <plugin>
@@ -122,6 +126,7 @@
       </plugin>
     </plugins>
   </build>
+
   <profiles>
     <profile>
       <id>unix</id>
