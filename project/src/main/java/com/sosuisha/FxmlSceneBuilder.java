@@ -24,7 +24,6 @@ public class FxmlSceneBuilder {
         return new FxmlSceneBuilder().fxml(fxmlURL);
     }
 
-    @SuppressWarnings("unused")
     private FxmlSceneBuilder() {
     }
 
