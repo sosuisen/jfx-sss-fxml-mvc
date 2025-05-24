@@ -8,6 +8,6 @@
     prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1"
     xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sosuisha.MainController">
     <children>
-        <Label fx:id="titleLabel" id="titleLabel" layoutX="29.0" layoutY="26.0" text="Label" />
+        <Label fx:id="messageLabel" layoutX="29.0" layoutY="26.0" text="Label" />
     </children>
 </AnchorPane>

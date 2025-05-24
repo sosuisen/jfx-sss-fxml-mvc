@@ -13,24 +13,16 @@ public class App extends Application {
         var model = new Model();
 
         // View
-        var scene = new FxmlSceneBuilder("main.fxml")
+        var scene = FxmlSceneBuilder.create()
+                .fxml("main.fxml")
                 .css("style.css")
                 .size(640, 480)
-                .controller(controllerClass -> {
-                    try {
-                        // Call the constructor specified by fx:controller in fxmlPath.
-                        return controllerClass.getDeclaredConstructor(Model.class).newInstance(model);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                })
+                // The parameters of newController must match
+                // the constructor parameters of the controller class.
+                .newController(model)
                 .build();
         stage.setScene(scene);
         stage.setTitle("MyApp");
         stage.show();
-    }
-
-    public static void main(String[] args) {
-        launch();
     }
 }

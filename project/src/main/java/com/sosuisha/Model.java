@@ -1,10 +1,9 @@
 package com.sosuisha;
 
 public class Model {
-    private String hello = "Hello";
-    private String world = "world";
+    private String name = "JavaFX";
 
     public String getMessage() {
-        return hello + ", " + world + "!";
+        return "Hello, " + name + "!";
     }
 }
