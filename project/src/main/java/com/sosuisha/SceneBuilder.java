@@ -25,13 +25,13 @@ public class SceneBuilder {
     private Object[] ctrlConstructorParams;
 
     /**
-     * Creates a new SceneBuilder instance with the specified FXML resource name.
+     * Creates a new SceneBuilder instance from the specified FXML resource name.
      * 
      * @param resourceName the path to the FXML resource
      * @return a new SceneBuilder instance
      * @throws IllegalArgumentException if the resource is not found
      */
-    public static SceneBuilder withFxml(String resourceName) {
+    public static SceneBuilder fromFxml(String resourceName) {
         var url = SceneBuilder.class.getResource(resourceName);
         if (url == null) {
             throw new IllegalArgumentException("FXML resource not found: " + resourceName);
@@ -40,12 +40,12 @@ public class SceneBuilder {
     }
 
     /**
-     * Creates a new SceneBuilder instance with the specified FXML URL.
+     * Creates a new SceneBuilder instance from the specified FXML URL.
      * 
      * @param fxmlURL the URL of the FXML file
      * @return a new SceneBuilder instance
      */
-    public static SceneBuilder withFxml(URL fxmlURL) {
+    public static SceneBuilder fromFxml(URL fxmlURL) {
         return new SceneBuilder(Objects.requireNonNull(fxmlURL, "Url must not be null."));
     }
 
