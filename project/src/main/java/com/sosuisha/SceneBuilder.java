@@ -4,16 +4,17 @@ import javafx.scene.Scene;
 import javafx.fxml.FXMLLoader;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 
 /**
  * Builder for constructing a JavaFX Scene with specified FXML and CSS files.
  * <p>
  * Example:
+ * 
  * <pre>
- * var scene = FxmlSceneBuilder.create("/com/example/main.fxml")
- *     .css("/com/example/style.css")
- *     .size(800, 600)
- *     .build();
+ * var scene = SceneBuilder.withFxml("/com/example/main.fxml")
+ *         .css("/com/example/style.css")
+ *         .build();
  * </pre>
  */
 public class SceneBuilder {
@@ -25,56 +26,62 @@ public class SceneBuilder {
 
     /**
      * Creates a new SceneBuilder instance with the specified FXML resource name.
-     * @param fxmlResourceName the path to the FXML resource
+     * 
+     * @param resourceName the path to the FXML resource
      * @return a new SceneBuilder instance
+     * @throws IllegalArgumentException if the resource is not found
      */
-    public static SceneBuilder withFxml(String fxmlResourceName) {
-        return new SceneBuilder(fxmlResourceName);
+    public static SceneBuilder withFxml(String resourceName) {
+        var url = SceneBuilder.class.getResource(resourceName);
+        if (url == null) {
+            throw new IllegalArgumentException("FXML resource not found: " + resourceName);
+        }
+        return new SceneBuilder(url);
     }
 
     /**
      * Creates a new SceneBuilder instance with the specified FXML URL.
+     * 
      * @param fxmlURL the URL of the FXML file
      * @return a new SceneBuilder instance
      */
     public static SceneBuilder withFxml(URL fxmlURL) {
-        return new SceneBuilder(fxmlURL);
+        return new SceneBuilder(Objects.requireNonNull(fxmlURL, "Url must not be null."));
     }
 
-    private SceneBuilder(String resourceName) {
-        this.fxmlURL = getClass().getResource(resourceName);
-    }
-
-    private SceneBuilder(URL url) {
-        this.fxmlURL = url;
+    private SceneBuilder(URL fxmlURL) {
+        this.fxmlURL = Objects.requireNonNull(fxmlURL, "fxmlURL must not be null.");
     }
 
     /**
      * Specifies the CSS resource name.
+     * 
      * @param resourceName the path to the CSS resource
      * @return this builder
-     * @throws IllegalStateException if the resource is not found
+     * @throws IllegalArgumentException if the resource is not found
      */
     public SceneBuilder css(String resourceName) {
-        cssURL = getClass().getResource(resourceName);
+        cssURL = SceneBuilder.class.getResource(resourceName);
         if (cssURL == null) {
-            throw new IllegalStateException("CSS resource not found: " + resourceName);
-        }        
+            throw new IllegalArgumentException("CSS resource not found: " + resourceName);
+        }
         return this;
     }
 
     /**
      * Specifies the CSS URL.
+     * 
      * @param url the URL of the CSS file
      * @return this builder
      */
     public SceneBuilder css(URL url) {
-        cssURL = url;
+        cssURL = Objects.requireNonNull(url, "Url must not be null.");
         return this;
     }
 
     /**
      * Specifies the constructor arguments for the controller.
+     * 
      * @param constructorArgs the constructor arguments for the controller
      * @return this builder
      */
@@ -86,7 +93,8 @@ public class SceneBuilder {
     /**
      * Specifies the size of the Scene.
      * If not set, the Scene will use the size of the root container.
-     * @param width the width
+     * 
+     * @param width  the width
      * @param height the height
      * @return this builder
      */
@@ -98,14 +106,11 @@ public class SceneBuilder {
 
     /**
      * Builds the Scene.
+     * 
      * @return the constructed Scene
      * @throws IOException if loading the FXML fails
-     * @throws IllegalStateException if fxml() has not been called
      */
     public Scene build() throws IOException {
-        if (fxmlURL == null) {
-            throw new IllegalStateException("fxml() must be called before build()");
-        }
         var loader = new FXMLLoader(fxmlURL);
 
         if (ctrlConstructorParams != null && ctrlConstructorParams.length > 0) {
@@ -115,19 +120,26 @@ public class SceneBuilder {
                 // controllerClass refers to the class specified by the fx:controller attribute.
                 var paramTypes = new Class<?>[ctrlConstructorParams.length];
                 for (var i = 0; i < ctrlConstructorParams.length; i++) {
-                    paramTypes[i] = ctrlConstructorParams[i].getClass();
+                    paramTypes[i] = ctrlConstructorParams[i] != null
+                            ? ctrlConstructorParams[i].getClass()
+                            : Object.class; // If null, use Object.class to avoid NullPointerException.
                 }
                 // Retrieve a constructor that accepts paramTypes as a parameter,
                 // and then use it to create an instance.
                 try {
-                    return controllerClass.getDeclaredConstructor(paramTypes).newInstance(ctrlConstructorParams);
+                    return controllerClass.getDeclaredConstructor(paramTypes)
+                            .newInstance(ctrlConstructorParams);
                 } catch (Exception e) {
-                    throw new RuntimeException("Failed to create controller instance", e);
+                    throw new RuntimeException("Failed to create controller instance for "
+                            + controllerClass.getName(), e);
                 }
             });
         }
 
-        var scene = (width < 0 || height < 0) ? new Scene(loader.load()) : new Scene(loader.load(), width, height);
+        var scene = (width < 0 || height < 0)
+                ? new Scene(loader.load())
+                : new Scene(loader.load(), width, height);
+
         if (cssURL != null) {
             scene.getStylesheets().add(cssURL.toExternalForm());
         }
