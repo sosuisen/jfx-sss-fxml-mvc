@@ -50,7 +50,7 @@ public class SceneBuilder {
     }
 
     private SceneBuilder(URL fxmlURL) {
-        this.fxmlURL = Objects.requireNonNull(fxmlURL, "fxmlURL must not be null.");
+        this.fxmlURL = Objects.requireNonNull(fxmlURL, "Url must not be null.");
     }
 
     /**
