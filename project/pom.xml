@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.sosuisen</groupId>
   <artifactId>jfx-sss-fxml-mvc</artifactId>
-  <version>2.1.0</version>
+  <version>2.2.0</version>
   <description>JavaFX archetype for a non-modular MVC project using FXML</description>
   <url>https://github.com/sosuisen/</url>
   <licenses>
