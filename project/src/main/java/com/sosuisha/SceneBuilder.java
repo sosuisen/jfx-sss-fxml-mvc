@@ -50,7 +50,7 @@ public class SceneBuilder {
     }
 
     private SceneBuilder(URL fxmlURL) {
-        this.fxmlURL = Objects.requireNonNull(fxmlURL, "Url must not be null.");
+        this.fxmlURL = Objects.requireNonNull(fxmlURL, "fxmlURL must not be null.");
     }
 
     /**
@@ -136,9 +136,15 @@ public class SceneBuilder {
             });
         }
 
-        var scene = (width < 0 || height < 0)
+        Scene scene;
+        try {
+            scene = (width < 0 || height < 0)
                 ? new Scene(loader.load())
                 : new Scene(loader.load(), width, height);
+        } catch (javafx.fxml.LoadException e) {
+            // Set more informative message
+            throw new javafx.fxml.LoadException("Failed to load FXML from " + fxmlURL, e);
+        }
 
         if (cssURL != null) {
             scene.getStylesheets().add(cssURL.toExternalForm());
