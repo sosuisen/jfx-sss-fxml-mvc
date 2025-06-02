@@ -31,11 +31,9 @@ public class App extends Application {
      */
     private void showMainWindow(Stage stage, Model model) {
         try {
-            var scene = FxmlSceneBuilder.create()
-                    // The controller class must be specified in the FXML file.
-                    .fxml("main.fxml")
+            // A controller class must be specified in fx:controller of main.fxml.
+            var scene = SceneBuilder.withFxml("main.fxml")
                     .css("style.css")
-                    .size(640, 480)
                     // The parameters of newController must match
                     // the constructor parameters of the controller class.
                     .newController(model)

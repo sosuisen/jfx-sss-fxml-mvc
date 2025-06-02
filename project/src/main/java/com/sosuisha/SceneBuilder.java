@@ -16,67 +16,37 @@ import java.net.URL;
  *     .build();
  * </pre>
  */
-public class FxmlSceneBuilder {
-    private URL fxmlURL;
+public class SceneBuilder {
+    private final URL fxmlURL;
     private URL cssURL;
-    private int width = 0; // can be 0 for default width
-    private int height = 0; // can be 0 for default height
+    private int width = -1;
+    private int height = -1;
     private Object[] ctrlConstructorParams;
 
     /**
-     * Creates a default FxmlSceneBuilder.
-     * @return a new FxmlSceneBuilder instance
-     */
-    public static FxmlSceneBuilder create() {
-        return new FxmlSceneBuilder();
-    }
-
-    /**
-     * Creates a FxmlSceneBuilder with the specified FXML resource name.
+     * Creates a new SceneBuilder instance with the specified FXML resource name.
      * @param fxmlResourceName the path to the FXML resource
-     * @return a new FxmlSceneBuilder instance
+     * @return a new SceneBuilder instance
      */
-    public static FxmlSceneBuilder create(String fxmlResourceName) {
-        return new FxmlSceneBuilder().fxml(fxmlResourceName);
+    public static SceneBuilder withFxml(String fxmlResourceName) {
+        return new SceneBuilder(fxmlResourceName);
     }
 
     /**
-     * Creates a FxmlSceneBuilder with the specified FXML URL.
+     * Creates a new SceneBuilder instance with the specified FXML URL.
      * @param fxmlURL the URL of the FXML file
-     * @return a new FxmlSceneBuilder instance
+     * @return a new SceneBuilder instance
      */
-    public static FxmlSceneBuilder create(URL fxmlURL) {
-        return new FxmlSceneBuilder().fxml(fxmlURL);
+    public static SceneBuilder withFxml(URL fxmlURL) {
+        return new SceneBuilder(fxmlURL);
     }
 
-    /**
-     * Constructor (not accessible from outside)
-     */
-    private FxmlSceneBuilder() {
+    private SceneBuilder(String resourceName) {
+        this.fxmlURL = getClass().getResource(resourceName);
     }
 
-    /**
-     * Specifies the FXML resource name.
-     * @param resourceName the path to the FXML resource
-     * @return this builder
-     * @throws IllegalStateException if the resource is not found
-     */
-    public FxmlSceneBuilder fxml(String resourceName) {
-        fxmlURL = getClass().getResource(resourceName);
-        if (fxmlURL == null) {
-            throw new IllegalStateException("FXML resource not found: " + resourceName);
-        }
-        return this;
-    }
-
-    /**
-     * Specifies the FXML URL.
-     * @param url the URL of the FXML file
-     * @return this builder
-     */
-    public FxmlSceneBuilder fxml(URL url) {
-        fxmlURL = url;
-        return this;
+    private SceneBuilder(URL url) {
+        this.fxmlURL = url;
     }
 
     /**
@@ -85,7 +55,7 @@ public class FxmlSceneBuilder {
      * @return this builder
      * @throws IllegalStateException if the resource is not found
      */
-    public FxmlSceneBuilder css(String resourceName) {
+    public SceneBuilder css(String resourceName) {
         cssURL = getClass().getResource(resourceName);
         if (cssURL == null) {
             throw new IllegalStateException("CSS resource not found: " + resourceName);
@@ -98,7 +68,7 @@ public class FxmlSceneBuilder {
      * @param url the URL of the CSS file
      * @return this builder
      */
-    public FxmlSceneBuilder css(URL url) {
+    public SceneBuilder css(URL url) {
         cssURL = url;
         return this;
     }
@@ -108,18 +78,19 @@ public class FxmlSceneBuilder {
      * @param constructorArgs the constructor arguments for the controller
      * @return this builder
      */
-    public FxmlSceneBuilder newController(Object... constructorArgs) {
+    public SceneBuilder newController(Object... constructorArgs) {
         ctrlConstructorParams = constructorArgs;
         return this;
     }
 
     /**
      * Specifies the size of the Scene.
+     * If not set, the Scene will use the size of the root container.
      * @param width the width
      * @param height the height
      * @return this builder
      */
-    public FxmlSceneBuilder size(int width, int height) {
+    public SceneBuilder size(int width, int height) {
         this.width = width;
         this.height = height;
         return this;
@@ -156,7 +127,7 @@ public class FxmlSceneBuilder {
             });
         }
 
-        var scene = new Scene(loader.load(), width, height);
+        var scene = (width < 0 || height < 0) ? new Scene(loader.load()) : new Scene(loader.load(), width, height);
         if (cssURL != null) {
             scene.getStylesheets().add(cssURL.toExternalForm());
         }
