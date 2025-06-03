@@ -4,7 +4,9 @@ import javafx.scene.Scene;
 import javafx.fxml.FXMLLoader;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 /**
  * Builder for constructing a JavaFX Scene with specified FXML and CSS files.
@@ -14,6 +16,7 @@ import java.util.Objects;
  * <pre>
  * var scene = SceneBuilder.withFxml("/com/example/main.fxml")
  *         .css("/com/example/style.css")
+ *         .resources("com.example.i18n.Messages", Locale.getDefault())
  *         .build();
  * </pre>
  */
@@ -23,6 +26,7 @@ public class SceneBuilder {
     private int width = -1;
     private int height = -1;
     private Object[] ctrlConstructorParams;
+    private ResourceBundle resources;
 
     /**
      * Creates a new SceneBuilder instance from the specified FXML resource name.
@@ -105,13 +109,41 @@ public class SceneBuilder {
     }
 
     /**
+     * Specifies the ResourceBundle for internationalization.
+     * 
+     * @param ResourceBundle the ResourceBundle to use
+     * @return this builder
+     */
+    public SceneBuilder resources(ResourceBundle resources) {
+        this.resources = resources;
+        return this;
+    }
+
+    /**
+     * Specifies the ResourceBundle for internationalization.
+     * 
+     * @param baseName the base name of the resource bundle
+     * @param locale   the locale for the resource bundle
+     * @return this builder
+     */
+    public SceneBuilder resources(String baseName, Locale locale) {
+        resources = ResourceBundle.getBundle(baseName, locale);
+        return this;
+    }
+
+    /**
      * Builds the Scene.
      * 
      * @return the constructed Scene
      * @throws IOException if loading the FXML fails
      */
     public Scene build() throws IOException {
-        var loader = new FXMLLoader(fxmlURL);
+        FXMLLoader loader;
+        if (resources != null) {
+            loader = new FXMLLoader(fxmlURL, resources);
+        } else {
+            loader = new FXMLLoader(fxmlURL);
+        }
 
         if (ctrlConstructorParams != null && ctrlConstructorParams.length > 0) {
             loader.setControllerFactory(controllerClass -> {
@@ -139,8 +171,8 @@ public class SceneBuilder {
         Scene scene;
         try {
             scene = (width < 0 || height < 0)
-                ? new Scene(loader.load())
-                : new Scene(loader.load(), width, height);
+                    ? new Scene(loader.load())
+                    : new Scene(loader.load(), width, height);
         } catch (javafx.fxml.LoadException e) {
             // Set more informative message
             throw new javafx.fxml.LoadException("Failed to load FXML from " + fxmlURL, e);
