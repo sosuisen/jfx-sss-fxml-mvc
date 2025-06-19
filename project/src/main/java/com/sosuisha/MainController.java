@@ -19,7 +19,8 @@ public class MainController {
         this.model = model;
     }
 
-    public void initialize() {
+    @FXML
+    private void initialize() {
         // initialize() is called after main.fxml is loaded.
         messageLabel.setText(model.getMessage());
     }
